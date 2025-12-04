@@ -4,7 +4,6 @@ import os
 import traceback
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-CORS(app)
 
 app = Flask(__name__)
 CORS(app) # Permite a conexão do HTML com o Python
