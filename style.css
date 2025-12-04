@@ -1,0 +1,164 @@
+body {
+    background: #eef3f8;
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* CARD PRINCIPAL */
+.card {
+    background: #ffffff;
+    width: 85%;
+    margin: 40px auto;
+    border-radius: 20px;
+    padding-bottom: 25px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+}
+
+/* CABEÇALHO */
+.header {
+    background: linear-gradient(135deg, #00a8ff, #00c49a);
+    padding: 35px 20px;
+    text-align: center;
+    color: #ffffff;
+    border-radius: 20px 20px 0 0;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.header p {
+    margin-top: 8px;
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* ÁREA INTERNA */
+.content {
+    display: flex;
+    padding: 30px;
+    gap: 40px;
+}
+
+/* FORMULÁRIO */
+.form-area {
+    width: 65%;
+}
+
+.form-area h2 {
+    margin-bottom: 15px;
+    color: #005b7f;
+}
+
+/* GRID MELHORADO */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 28px; /* mais espaçamento */
+}
+
+/* LABELS E INPUTS */
+label {
+    font-weight: 600;
+    color: #004b63;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #bcd2db;
+    margin-top: 5px;
+    font-size: 15px;
+    transition: 0.2s;
+    background: #f9fbfc;
+}
+
+input:focus, select:focus {
+    border-color: #00a8ff;
+    background: white;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0,168,255,0.4);
+}
+
+/* BOTÃO */
+.btn {
+    width: 100%;
+    background: linear-gradient(135deg, #00c49a, #00997a);
+    padding: 16px;
+    border-radius: 10px;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    margin-top: 25px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, #00997a, #007d62);
+}
+
+/* BOX DO RESULTADO */
+.risk-box {
+    width: 35%;
+    padding: 25px;
+    border-radius: 16px;
+    border: 2px solid #d9e5ea;
+    background: #f7fafc;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* CORES DAS CAIXAS */
+.red-box {
+    background: #ffe7e7;
+    border-color: #ff6b6b;
+}
+
+.green-box {
+    background: #e5ffe7;
+    border-color: #12d65e;
+}
+
+.yellow-box {
+    background: #fff7d6;
+    border-color: #ffd93b;
+}
+
+/* TEXTOS DO RESULTADO */
+.danger {
+    color: #c62828;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.safe {
+    color: #1b8d3c;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.warning {
+    color: #d4a019;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 900px) {
+    .content {
+        flex-direction: column;
+    }
+
+    .form-area, .risk-box {
+        width: 100%;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

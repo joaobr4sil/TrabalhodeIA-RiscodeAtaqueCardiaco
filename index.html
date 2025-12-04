@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Avaliação de Risco Cardíaco (IA)</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* CSS adicional para controlar a visualização */
+        .risk-box {
+            display: none; /* Esconde o resultado por padrão */
+        }
+        .form-area {
+            display: block; /* Mostra o formulário por padrão */
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+
+    <div class="header">
+        <h1>Sistema de Previsão de Risco Cardíaco (IA)</h1>
+        <p>Modelo Simples para Análise de Saúde</p>
+    </div>
+
+    <div class="content">
+
+        <div class="form-area" id="formArea">
+            <h2>Dados do Paciente</h2>
+
+            <form id="riskForm">
+
+                <div class="grid">
+
+                    <div>
+                        <label>Idade</label>
+                        <input type="number" name="Age" id="idade" min="1" max="120" required>
+                    </div>
+
+                    <div>
+                        <label>Gênero</label>
+                        <select name="Gender" id="genero" required>
+                            <option value="" disabled selected>Selecione...</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Colesterol</label>
+                        <input type="number" name="Cholesterol" id="colesterol" max="500" required>
+                    </div>
+
+                    <div>
+                        <label>Frequência Cardíaca</label>
+                        <input type="number" name="HeartRate" id="freq" max="600" required>
+                    </div>
+
+                    <div>
+                        <label>Diabetes</label>
+                        <select name="Diabetes" id="diabetes" required>
+                            <option value="0">Não</option>
+                            <option value="1">Sim</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Histórico Familiar</label>
+                        <select name="FamilyHistory" id="familiar" required>
+                            <option value="0">Não</option>
+                            <option value="1">Sim</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Fumante</label>
+                        <select name="Smoking" id="fumante" required>
+                            <option value="0">Não</option>
+                            <option value="1">Sim</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Obesidade</label>
+                        <select name="Obesity" id="obesidade" required>
+                            <option value="0">Não</option>
+                            <option value="1">Sim</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Consome Álcool</label>
+                        <select name="AlcoholConsumption" id="alcool" required>
+                            <option value="0">Não</option>
+                            <option value="1">Sim</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Problemas Cardíacos Anteriores</label>
+                        <select name="PreviousHeartProblems" id="anteriores" required>
+                            <option value="0">Não</option>
+                            <option value="1">Sim</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Triglicerídeos</label>
+                        <input type="number" name="Triglycerides" id="triglicerideos" max="10000" required>
+                    </div>
+
+                    <div>
+                        <label>Nível de Estresse (1–10)</label>
+                        <input type="number" name="StressLevel" id="estresse" min="1" max="10" required>
+                    </div>
+
+                </div>
+
+                <button class="btn" type="submit">CALCULAR RISCO</button>
+            </form>
+        </div>
+
+        <div class="risk-box" id="riskBox">
+            <div id="riskContent">
+                </div>
+            <button class="btn" onclick="resetForm()">NOVA AVALIAÇÃO</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    document.getElementById('riskForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Impede o envio tradicional do formulário
+
+        const form = event.target;
+        const formArea = document.getElementById('formArea');
+        const riskBox = document.getElementById('riskBox');
+        const riskContent = document.getElementById('riskContent');
+        const submitButton = form.querySelector('.btn');
+
+        submitButton.textContent = 'CALCULANDO...';
+        submitButton.disabled = true;
+
+        // 1. Coleta os dados do formulário
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = (key !== 'Gender' && !isNaN(value)) ? Number(value) : value;
+        });
+
+        // 2. Envia os dados para o back-end
+        try {
+            const response = await fetch('http://127.0.0.1:5000/predict', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro na resposta do servidor: ' + response.statusText);
+            }
+
+            const result = await response.json();
+            console.log("Resultado da IA:", result);
+
+            // 3. LÓGICA DE EXIBIÇÃO CORRIGIDA (APENAS 2 NÍVEIS)
+            
+            let risco_texto, risk_class, text_class;
+            
+            const probRisco = result.probabilidade_risco;
+            const probSaude = result.probabilidade_nao_risco;
+            const predictedClass = result.predicted_class;
+            
+            // Lógica Simplificada: Se for Classe 1 é Alto Risco, senão é Baixo.
+            if (predictedClass === 1) { 
+                // ALTO RISCO
+                risco_texto = "ALERTA: RISCO DE ATAQUE CARDÍACO ";
+                risk_class = "red-box";
+                text_class = "danger";
+            } else { 
+                // BAIXO RISCO
+                risco_texto = "BAIXO RISCO DE ATAQUE CARDÍACO";
+                risk_class = "green-box";
+                text_class = "safe";
+            }
+
+            // Atualiza visual
+            riskBox.className = 'risk-box';
+            riskBox.classList.add(risk_class);
+
+            riskContent.innerHTML = `
+                <h2 class="${text_class}">${risco_texto}</h2>
+                <p>Probabilidade de Ataque Cardíaco: <b>${probRisco}%</b></p>
+                <p>Probabilidade de Estar Saudável: <b>${probSaude}%</b></p>
+                <br>
+                <h3>Dados Inseridos:</h3>
+                <p>Idade: ${data.Age}, Gênero: ${data.Gender}, Colesterol: ${data.Cholesterol}, Frequência Cardíaca: ${data.HeartRate}, Diabetes: ${data.Diabetes}, Familiar: ${data.FamilyHistory}, Fumante: ${data.Smoking}, Obesidade: ${data.Obesity}, Álcool: ${data.AlcoholConsumption}, Anteriores: ${data.PreviousHeartProblems}, Triglicerídeos: ${data.Triglycerides}, Estresse: ${data.StressLevel}</p>
+            `;
+
+            formArea.style.display = 'none';
+            riskBox.style.display = 'block';
+
+        } catch (error) {
+            console.error('Falha ao calcular o risco:', error);
+            riskContent.innerHTML = `
+                <h2 class="danger">ERRO DE CONEXÃO</h2>
+                <p>Não foi possível comunicar com o servidor Python.</p>
+                <p>Detalhes: ${error.message}</p>
+            `;
+            formArea.style.display = 'none'; 
+            riskBox.style.display = 'block'; 
+
+        } finally {
+            submitButton.textContent = 'CALCULAR RISCO';
+            submitButton.disabled = false;
+        }
+    });
+
+    function resetForm() {
+        document.getElementById('riskForm').reset();
+        document.getElementById('formArea').style.display = 'block';
+        document.getElementById('riskBox').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
