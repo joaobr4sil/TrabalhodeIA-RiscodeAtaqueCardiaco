@@ -152,7 +152,7 @@
 
         // 2. Envia os dados para o back-end
         try {
-            const response = await fetch('https://trabalhodeia-riscodeataquecardiaco-yjfh.onrender.com/predict', { 
+            const response = await fetch('/predict', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -161,7 +161,7 @@
             });
 
             if (!response.ok) {
-                throw new Error('Erro na resposta do servidor: ' + response.statusText);
+                throw new Error('Erro na resposta do servidor: ' + response.status);
             }
 
             const result = await response.json();

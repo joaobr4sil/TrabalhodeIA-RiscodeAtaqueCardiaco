@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app) # Permite a conexão do HTML com o Python
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 MODEL_FILE = 'modelo_pipeline_final.pkl'
